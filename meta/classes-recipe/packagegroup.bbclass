@@ -56,6 +56,8 @@ deltask do_populate_sysroot
 
 do_create_runtime_spdx[deptask] = "do_create_spdx"
 do_create_runtime_spdx[rdeptask] = ""
+do_create_package_spdx[deptask] = "do_create_spdx"
+do_create_package_spdx[rdeptask] = ""
 
 INHIBIT_DEFAULT_DEPS = "1"
 
