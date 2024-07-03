@@ -1,0 +1,48 @@
+From 90477fa7f0d403324c9fc05af34648374f03e0bb Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Gu=C3=B0ni=20M=C3=A1r=20Gilbert?= <gudni.m.g@gmail.com>
+Date: Wed, 3 Jul 2024 22:42:19 +0000
+Subject: [PATCH] configure.ac: Fix --disable-cups
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+or else we get:
+  configure: error: conditional "CUPS_SERVERBIN" was never defined.
+  Usually this means the macro was only invoked conditionally.
+
+Fixes: https://github.com/bluez/bluez/issues/773
+
+Credits go to Lars Wendler <polynomial-c@gmx.de>, See upstream patch:
+https://lore.kernel.org/linux-bluetooth/20240416052603.4373-2-polynomial-c@gmx.de/
+
+The patch was denied/ignored due to failing CI checks, though it is unclear what
+failed. The patch may need to be resubmitted upstream.
+
+Upstream-Status: Denied
+
+Signed-off-by: Guðni Már Gilbert <gudni.m.g@gmail.com>
+---
+ configure.ac | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/configure.ac b/configure.ac
+index ac9de6e..8e902c3 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -249,12 +249,12 @@ AM_CONDITIONAL(CUPS, test "${enable_cups}" != "no")
+ if (test "${enable_cups}" != "no"); then
+ 	AC_MSG_CHECKING([cups directory])
+ 	cups_serverbin=`$PKG_CONFIG cups --variable=cups_serverbin`
+-	AM_CONDITIONAL(CUPS_SERVERBIN, test "${cups_serverbin}" != "")
+-	if (test "${cups_serverbin}" != ""); then
+-		AC_SUBST(CUPS_SERVERBIN, ${cups_serverbin})
+-	fi
+ 	AC_MSG_RESULT([${cups_serverbin}])
+ fi
++AM_CONDITIONAL(CUPS_SERVERBIN, test "${cups_serverbin}" != "")
++AS_IF([test "${cups_serverbin}" != ""],[
++	AC_SUBST(CUPS_SERVERBIN, ${cups_serverbin})
++])
+ 
+ AC_ARG_ENABLE(mesh, AS_HELP_STRING([--enable-mesh],
+ 		[enable Mesh profile support]), [enable_mesh=${enableval}])
